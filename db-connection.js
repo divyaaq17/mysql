@@ -1,32 +1,49 @@
-const mysql = require('mysql2')
+const {Sequelize} = require('sequelize')
 
-const connection =mysql.createConnection({
+const sequelize = new Sequelize('testdb','root','mysql123',{
     host:'localhost',
-    user:'root',
-    password:'mysql123',
-    database:'testDB'
-})
+    dialect:'mysql'
+});
+(async()=>{
+try{
 
-connection.connect((err)=>{
-    if(err){
-        console.log(err);
-             return;
-    }
-    console.log("Connection has been created");
+   await sequelize.authenticate()
+   console.log("Connection successful")
+}catch(error){
+console.log(error)
+}})();
 
-    const createQuery = `create table IF NOT EXISTS students(id INT AUTO_INCREMENT PRIMARY KEY,
-                        name VARCHAR(20),
-                        email VARCHAR(20),
-                        age INT)`
+module.exports=sequelize;
 
-connection.execute(createQuery,(err)=>{
-    if(err){
-    console.log(err);
-        connection.end()
-        return;
-    }
-    console.log("table is created")
-})
-})
+// const mysql = require('mysql2')
 
-module.exports = connection;
+// const connection =mysql.createConnection({
+//     host:'localhost',
+//     user:'root',
+//     password:'mysql123',
+//     database:'testDB'
+// })
+
+// connection.connect((err)=>{
+//     if(err){
+//         console.log(err);
+//              return;
+//     }
+//     console.log("Connection has been created");
+
+//     const createQuery = `create table IF NOT EXISTS students(id INT AUTO_INCREMENT PRIMARY KEY,
+//                         name VARCHAR(20),
+//                         email VARCHAR(20),
+//                         age INT)`
+
+// connection.execute(createQuery,(err)=>{
+//     if(err){
+//     console.log(err);
+//         connection.end()
+//         return;
+//     }
+//     console.log("table is created")
+// })
+// })
+
+// module.exports = connection;
