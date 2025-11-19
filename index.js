@@ -12,7 +12,7 @@ app.get('/',(req,res)=>
 
 app.use("/students",studentRoutes)
 
-db.sync({force:true}).then((error)=>{
+db.sync().then((error)=>{
 app.listen(4000,(err)=>{
     console.log("Server is running")
 })
