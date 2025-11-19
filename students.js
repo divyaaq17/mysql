@@ -4,7 +4,7 @@ const sequelize = require("../utils/db-connection")
 const Students = sequelize.define(
   'Students',
   {
-    // Model attributes are defined here
+    
     id: {
       type: DataTypes.INTEGER,
       primaryKey:true,
@@ -19,7 +19,7 @@ const Students = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false
     },
-    email: {
+    age: {
       type: DataTypes.INTEGER,
       allowNull: false
     }
