@@ -1,74 +1,71 @@
+const { Op } = require("sequelize");
+
 const db2 = require('../utils/db-connection2');
+const busModel = require("../models/Bus")
+const  userModel= require("../models/User")
+const paymentModel = require("../models/payment")
+const  bookingModel= require("../models/booking")
 
-const addBusEntries = (req,res)=>{
-    const {busNumber,totalSeats,availableSeats}= req.body;
-    const insertQuery = "INSERT INTO BUSES (busNumber,totalSeats,availableSeats) VALUES (?,?,?)"
-
-    db2.execute(insertQuery,[busNumber,totalSeats,availableSeats],(err)=>{
-        if(err){
-            console.log(err.message);
-            res.status(200).send(err.message);
-            
-            return;
-            }
-        console.log("BUS ENTRY INSERTED")
-        res.status(200).send(`Bus ${busNumber} is successfully added`)
-
-    })
-
-
-}
-
-const addUserDetails = (req,res)=>{
-    const {email,name}= req.body;
-    const insertQuery = "INSERT INTO USERS (email,name) VALUES (?,?)"
-
-    db2.execute(insertQuery,[email,name],(err)=>{
-        if(err){
-            console.log(err.message);
-            res.status(200).send(err.message);
-            
-            return;
-            }
-        console.log("USER ENTRY INSERTED")
-        res.status(200).send(`User ${name} is successfully added`)
-
-    })
+const addBusEntries = async (req,res)=>{
+    try {
+        const {busNumber,totalSeats,availableSeats}= req.body;
+        const bus = await busModel.create({
+    busNumber:busNumber,
+    totalSeats:totalSeats,
+    availableSeats:availableSeats
+});
+ res.status(201).send(`bus ${busNumber} is successfully added`)
+    } catch (error) {
+         res.status(500).send("Unable to make an entry")
+    }
 
 }
 
-const showBus = (req,res)=>{
-    const {num} = req.params;
-    const selectQuery = `Select * from Buses where availableSeats>?`   
-         db2.execute(selectQuery,[num],(err)=>{
-        if(err){
-            console.log(err.message);
-            res.status(200).send(err.message);
-            
-            return;
-            }
-        console.log("RETRIEVE ALL BUSES")
-        res.status(200).send("RETRIEVE ALL BUSES..")
+const addUserDetails = async (req,res)=>{
 
-    })
-
+    try {
+         const {email,name}= req.body;
+          const user = await userModel.create({
+    email:email,
+    name:name
+});
+ res.status(201).send(`User ${name} is successfully added`)
+    } catch (error) {
+           res.status(500).send("Unable to make an entry")
+    }
+  
+res.status(200).send(`User is successfully added`)
 }
 
-const showUsers = (req,res)=>{
-   
-    const selectQuery = "Select * from Users"   
-         db2.execute(selectQuery,(err)=>{
-        if(err){
-            console.log(err.message);
-            res.status(200).send(err.message);
-          
-            return;
-            }
-        console.log("RETRIEVE ALL USERS")
-        res.status(200).send("RETRIEVE ALL USERS..")
+const showBus =async (req,res)=>{
+    try {
+        const {num} = req.params;
+        const busses = await busModel.findAll({
+  where: {
+    availableSeats:{
+    [Op.gt]: num,
+    }
+  },
+});
+console.log(busses.every(bus => bus instanceof busModel)); 
+console.log('All busses:', JSON.stringify(busses, null, 2));
+    } catch (error) {
+        res.status(500).send("Busses not found")
+    }
+       
+  res.status(200).send("RETRIEVE ALL BUSES..")
+}
 
-    })
-
+const showUsers = async (req,res)=>{
+   try {
+    const users = await userModel.findAll();
+console.log(users.every(user => user instanceof userModel)); // true
+console.log('All users:', JSON.stringify(users, null, 2));
+   } catch (error) {
+    res.status(500).send("Users not found")
+   }
+    
+    res.status(200).send("RETRIEVE ALL USERS..")
 }
 
 
