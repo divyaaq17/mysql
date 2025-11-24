@@ -1,4 +1,22 @@
-const mysql = require('mysql2')
+const {Sequelize} = require('sequelize')
+
+const sequelize = new Sequelize('BusDB','root','mysql123',{
+    host:'localhost',
+    dialect:'mysql'
+});
+
+(async()=>{
+try{
+
+   await sequelize.authenticate()
+   console.log("Connection successful")
+}catch(error){
+console.log(error)
+}})();
+
+module.exports=sequelize;
+
+/* const mysql = require('mysql2')
 
 const connection2 =mysql.createConnection({
     host:'localhost',
@@ -68,4 +86,4 @@ connection2.execute(createQuery,(err)=>{
 
 })
 
-module.exports = connection2;
+module.exports = connection2; */
